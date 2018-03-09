@@ -145,6 +145,25 @@ class Volume(Struct):
   host_path = Required(String)
   mode = Required(Mode)
 
+Visibility = Enum('FRAMEWORK', 'CLUSTER', 'EXTERNAL')
+
+class Port(Struct):
+  name = Required(String)
+  protocol = String
+  visibility = Mode
+  metadata = Default(List(Metadata), [])
+
+
+class DiscoveryInfo:
+  visibility = Default(Mode, 'FRAMEWORK')
+  name = String
+  environment = String
+  location = String
+  version = String
+  metadata = Default(List(Metadata), [])
+  ports = Default(List(Port), [])
+
+
 class Mesos(Struct):
   image = Choice([AppcImage, DockerImage])
   volumes = Default(List(Volume), [])
@@ -198,6 +217,8 @@ class MesosJob(Struct):
   # Specifying a `Container` with a `docker` property for Docker jobs is deprecated, instead just
   # specify the value of the container property to be a `Docker` container directly.
   container = Choice([Container, Docker, Mesos])
+
+  discovery_info = DiscoveryInfo
 
 
 Job = MesosJob

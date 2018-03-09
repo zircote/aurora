@@ -179,6 +179,45 @@ struct Volume {
   3: Mode mode
 }
 
+/**
+  * Service discovery information.
+  * The visibility field restricts discovery within a framework (FRAMEWORK),
+  * within a Mesos cluster (CLUSTER), or places no restrictions (EXTERNAL).
+*/
+enum Visibility {
+    FRAMEWORK = 0,
+    CLUSTER = 1,
+    EXTERNAL = 2
+}
+
+struct Port {
+  1: optional string name;
+  2: optional string protocol;
+  3: optional Visibility visibility;
+  4: optional set<Metadata> metadata;
+}
+
+struct DiscoveryInfo {
+  /** Each port in the ports field also has an optional visibility field. */
+  1: required Visibility visibility;
+  2: optional string name ;
+  /**
+   * environment may receive values such as PROD/QA/DEV, the location field may
+   * receive values like EAST-US/WEST-US/EUROPE/AMEA, and the version field may
+   * receive values like v2.0/v0.9. The exact use of these fields is up to each
+   * service discovery system.
+   */
+  3: optional string environment;
+  /** The environment, location, and version fields provide first class support for
+   * common attributes used to differentiate between similar services.
+   */
+  4: optional string location;
+  5: optional string version;
+  6: optional set<Metadata> metadata;
+  /* Each port in the ports field also has an optional visibility field. */
+  7: optional set<Port> ports;
+}
+
 /** Describes an image for use with the Mesos unified containerizer in the Docker format */
 struct DockerImage {
   /** The name of the image to run */
@@ -284,6 +323,8 @@ struct TaskConfig {
  // code generator.  See AURORA-1185 for details.
  /** the container the task should use to execute */
  29: Container container = { "mesos": {} }
+
+ 35: DiscoveryInfo discoveryInfo
 }
 
 struct ResourceAggregate {

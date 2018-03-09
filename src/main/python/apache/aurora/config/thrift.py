@@ -53,7 +53,10 @@ from gen.apache.aurora.api.ttypes import (
     TaskConfig,
     TaskConstraint,
     ValueConstraint,
-    Volume
+    Volume,
+    DiscoveryInfo,
+    Port,
+    Visibility
 )
 
 __all__ = (
